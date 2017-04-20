@@ -1,0 +1,1 @@
+./a.out -c 1 -o > test.jpg

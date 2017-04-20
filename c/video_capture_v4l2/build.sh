@@ -1,0 +1,1 @@
+gcc capture.c -ljpeg -DIO_READ -DIO_MMAP -DIO_USERPTR
