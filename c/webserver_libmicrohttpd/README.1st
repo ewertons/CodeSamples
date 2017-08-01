@@ -1,0 +1,33 @@
+##### References #####
+
+https://www.gnu.org/software/libmicrohttpd/
+
+
+
+##### For Building Statically #####
+
+Run:
+./prepare.sh
+./build-dynamic.sh
+
+This will produce the following binary:
+-rwxr-xr-x 1 pi pi 228604 Aug  1 18:20 webserver
+
+##### For Building Statically #####
+
+Run:
+./prepare.sh
+./build-static.sh
+
+This will produce the following binary:
+-rwxr-xr-x 1 pi pi 7756 Aug  1 19:57 webserver
+
+
+
+##### Running the Demo #####
+
+After building (above), run:
+./webserver <PORT NUMBER>
+
+Then open a web browser and point to "http://<address of host used above>:<PORT NUMBER>"
+
