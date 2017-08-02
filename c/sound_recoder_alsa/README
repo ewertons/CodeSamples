@@ -1,0 +1,3 @@
+# requires libasound2-dev installed to build
+# play the resulting audio file using 'aplay out.wav'
+
