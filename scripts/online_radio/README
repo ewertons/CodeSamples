@@ -1,0 +1,5 @@
+1. Check http://opml.radiotime.com for the url of the station desired
+2. run: cvlc <url>
+
+Requirements: must have vlc installed in the system (apt-get install vlc)
+
