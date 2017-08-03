@@ -3,9 +3,15 @@
 #include "wav.h"
 
 
-int main(void)
+int main(int argc, char** argv)
 {
-	WaveHeader* header = genericWAVHeader(16000, 8, 2);
+	if (argc != 4) 
+	{
+		printf("Arguments: <samplerate> <bits per sample> <number of channels\r\n");
+		return 1;
+	}
+
+	WaveHeader* header = genericWAVHeader(atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
 
 	if (header == NULL)
 	{
