@@ -1,0 +1,36 @@
+Request-based Actions
+
+Requests
+
+Stage 1 - Human-machine interfacing (Speech to text conversion)
+State 2 - Semantic interpretation
+Stage 3 - Knowledge gap reconciliation
+	Repeat Stage 2 until no knowledge gap occurs
+Stage 4 - Request execution
+Stage 5 - Result interpretation
+Stage 6 - Knowledge gap reconciliation
+	Repeat Stage 5 until no knowledge gap occurs
+Stage 7 - Human-machine interfacing (Text to speech conversion)
+
+
+Queries
+
+Stage 1 - Human-machine interfacing (Speech to text conversion)
+State 2 - Semantic interpretation
+Stage 3 - Knowledge gap reconciliation
+	Repeat Stage 2 until no knowledge gap occurs
+Stage 4 - Request execution
+Stage 5 - Result interpretation
+Stage 6 - Knowledge gap reconciliation
+	Repeat Stage 5 until no knowledge gap occurs
+Stage 7 - Human-machine interfacing (Text to speech conversion)
+
+
+
+
+Self-initiated Actions
+
+Pre-defined Tasks
+
+Autonomous Actions
+
