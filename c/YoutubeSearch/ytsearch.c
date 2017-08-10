@@ -361,11 +361,17 @@ static char* youtube_get_absolute_address(YOUTUBE_MEDIA_DESCRIPTION* yt_media_de
     return result; 
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
+    if (argc != 2)
+    {
+        printf("Usage: %s \"search string\" \r\n", argv[0]);
+        return 1;
+    }
+
     YOUTUBE_MEDIA_DESCRIPTION** items;
     size_t count;
-    youtube_search("pink floyd", &items, &count);
+    youtube_search(argv[1], &items, &count);
     printf("Found %d results:\r\n", count);
 
     size_t i;
