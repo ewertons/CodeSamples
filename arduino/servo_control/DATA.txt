@@ -1,0 +1,9 @@
+
+TowerPro SG90
+Working Voltage: 4.8V (ok with 5V)
+Speeed: 60 degrees/0.1 seconds
+Torque: 1.6 Kg/cm
+Weight: 9 gr
+Pulse Width Range: 0.5ms - 2.5ms
+
+
