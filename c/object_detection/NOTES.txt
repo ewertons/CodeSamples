@@ -1,0 +1,14 @@
+http://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/canny_detector/canny_detector.html
+
+Steps:
+Raw detection of shapes
+1. Detect edges
+3. Find shape candidates matching edges
+
+Post raw detection
+2. Detect text and its attributes (font, color)
+4. Detect colors within shapes;
+5. Interpret all data
+
+How about using gaussian filter to simulate the right-side of the brain
+
