@@ -28,6 +28,9 @@
 
 #define CLEAR(x) memset(&(x), 0, sizeof(x))
 
+#define IMAGE_WIDTH 1280
+#define IMAGE_HEIGHT 720
+
 enum io_method {
         IO_METHOD_READ,
         IO_METHOD_MMAP,
@@ -162,9 +165,9 @@ static void process_image(const void *p, int size)
         if (out_buf)
 	{
 		unsigned char* jpeg = (unsigned char*)malloc(sizeof(unsigned char) * size);
-		YUV422toRGB888(640, 480, (unsigned char*)p, jpeg);
+		YUV422toRGB888(IMAGE_WIDTH, IMAGE_HEIGHT, (unsigned char*)p, jpeg);
                 //fwrite(jpeg, size, 1, stdout);
-		jpegWrite(jpeg, 640, 480, 70, "./file.jpg");
+		jpegWrite(jpeg, IMAGE_WIDTH, IMAGE_HEIGHT, 70, "./file.jpg");
 		free(jpeg);
 	}
 
@@ -582,8 +585,8 @@ static void init_device(void)
 
         fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         if (force_format) {
-                fmt.fmt.pix.width       = 640;
-                fmt.fmt.pix.height      = 480;
+                fmt.fmt.pix.width       = IMAGE_WIDTH; 
+                fmt.fmt.pix.height      = IMAGE_HEIGHT;
                 fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
                 fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
