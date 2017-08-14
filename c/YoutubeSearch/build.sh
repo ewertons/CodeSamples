@@ -1,3 +1,2 @@
-# gcc simple.c -lcurl -g -o simple
-gcc simple.c -lcurl -lmyhtml -g -o simple
+gcc ytsearch.c -lcurl -lmyhtml -g -o ytsearch
 
