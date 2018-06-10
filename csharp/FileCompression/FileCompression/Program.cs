@@ -9,7 +9,8 @@ namespace FileCompression
     {
         static void Main(string[] args)
         {
-            byte[] buffer = Encoding.UTF8.GetBytes("abcdefghijklmnopqrstuvwxyz0123456789");
+            string originalData = "abcdefghijklmnopqrstuvwxyz0123456789";
+            byte[] outBuffer = Encoding.UTF8.GetBytes(originalData);
 
             const string filename = ".\\sample.gz";
 
@@ -18,20 +19,34 @@ namespace FileCompression
                 File.Delete(filename);
             }
 
-            Stream stream = new FileStream(filename, FileMode.CreateNew);
-            GZipStream gzipStream = new GZipStream(stream, CompressionLevel.Optimal);
+            Stream outStream = new FileStream(filename, FileMode.CreateNew);
+            GZipStream outGZipStream = new GZipStream(outStream, CompressionLevel.Optimal);
 
             int totalsize;
-            for (totalsize = 0; totalsize < 1000000; totalsize += buffer.Length)
+            for (totalsize = 0; totalsize < 1000000; totalsize += outBuffer.Length)
             {
-                gzipStream.Write(buffer, 0, buffer.Length);
+                outGZipStream.Write(outBuffer, 0, outBuffer.Length);
             }
 
-            gzipStream.Close();
+            outGZipStream.Close();
+            outStream.Close();
 
             FileInfo fileInfo = new FileInfo(filename);
 
             Console.WriteLine($"Original size: {totalsize} bytes; compressed size: {fileInfo.Length} bytes ({100.0  - 100.0 * fileInfo.Length / totalsize }%)");
+
+            Stream inStream = new FileStream(filename, FileMode.Open);
+            GZipStream inGZipStream = new GZipStream(inStream, CompressionMode.Decompress);
+
+            int bytesRead = 0;
+            byte[] inBuffer = new byte[outBuffer.Length];
+            bytesRead = inGZipStream.Read(inBuffer, 0, inBuffer.Length);
+            // Here there are a lot more data to read, since we wrote above in a loop.
+            // Getting just the first sequence for fun.
+
+            string decompressedData = Encoding.UTF8.GetString(inBuffer);
+            Console.WriteLine($"Original data: {originalData}");
+            Console.WriteLine($"Decompressed data: {decompressedData}");
         }
     }
 }
