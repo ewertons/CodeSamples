@@ -10,7 +10,11 @@ namespace tar
         {
             FileStream stream = new FileStream("./files.tar", FileMode.Open);
             TarBall tarball = new TarBall(stream);
-            tarball.MoveToFileAsync(0, CancellationToken.None).Wait();
+            TarHeader header = tarball.GetNextHeaderAsync();
+            Stream stream = tarball.GetFileStream();
+
+
+            //tarball.MoveToFileAsync(0, CancellationToken.None).Wait();
 
             //tar.AddFileAsync("file1.txt").Wait();
             //tar.AddFileAsync("./file2.txt").Wait();

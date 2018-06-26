@@ -73,32 +73,54 @@ namespace tar
             }
         }
 
-        private long nextHeaderPosition = 0;
         private long currentPosition = 0;
+        private long nextHeaderPosition = 0;
 
-        public Task<TarHeader> MoveToNextFileAsync(CancellationToken cancellationToken)
+        private bool MoveToNextHeader()
         {
-            return Task.Factory.StartNew(() =>
+            bool result;
+
+            if (baseStream.CanSeek)
             {
-                if (currentPosition < nextHeaderPosition)
-                {
-                    if (baseStream.CanSeek)
-                    {
-                        currentPosition = baseStream.Seek(nextHeaderPosition, SeekOrigin.Begin);
-                    }
-                    else
-                    {
-                        byte[] buffer = new byte[LOGICAL_RECORD_SIZE];
-                        while (currentPosition != nextHeaderPosition)
-                        {
-                            
-                        }
-                    }
-                }
+                currentPosition = baseStream.Seek(nextHeaderPosition, SeekOrigin.Begin);
 
                 if (currentPosition != nextHeaderPosition)
                 {
-                    throw new Exception($"Failed reading media (unexpected stream position {currentPosition})");
+                    result = false;
+                }
+                else
+                {
+                    result = true;
+                }
+            }
+            else
+            {
+                byte[] buffer = new byte[LOGICAL_RECORD_SIZE];
+
+                result = true;
+
+                while (currentPosition != nextHeaderPosition)
+                {
+                    Task<int> numBytesRead = baseStream.ReadAsync(buffer, 0, LOGICAL_RECORD_SIZE);
+                    numBytesRead.Wait();
+
+                    if (numBytesRead.Result != LOGICAL_RECORD_SIZE)
+                    {
+                        throw new InvalidDataException($"Read unexpected ammount of bytes {numBytesRead}; tarball possibly corrupted.");
+                    }
+                }
+            }
+        }
+
+        public async Task<TarHeader> GetNextHeaderAsync(uint fileIndex)
+        {
+            return Task.Factory.StartNew(() => {
+                TarHeader header;
+
+                if (currentPosition != nextHeaderPosition &&
+                    !MoveToNextHeader())
+                {
+                    header = null;
                 }
                 else
                 {
@@ -111,43 +133,18 @@ namespace tar
                         throw new InvalidDataException($"Read unexpected ammount of bytes {numBytesRead}; tarball possibly corrupted.");
                     }
 
-                    TarHeader tarHeader = TarHeader.Parse(encodedHeader);
+                    header = TarHeader.Parse(encodedHeader);
 
-                    if (tarHeader == null)
-                    {
-                        if (isEndOfFile(encodedHeader))
-                        {
+                    currentPosition += numBytesRead;
 
-                        }
-                    }
-                    else
-                    {
-                        uint size = TarHeader.GetSize(encodedHeader);
-
-                        uint fileSizeInLogicalRecords = (511 + size) / 512;
-                    }
+                    nextHeaderPosition += (LOGICAL_RECORD_SIZE + header.size);
                 }
 
-                return currentHeader;
+                return header;
             });
         }
 
-        public Task<uint> GetFileCountAsync(CancellationToken cancellationToken)
-        {
-            uint result = 0;
-
-            return Task.FromResult<uint>(result);
-        }
-
-        public async Task<TarHeader> GetFileDescriptionAsync(uint fileIndex)
-        {
-            TarHeader header = new TarHeader();
-
-
-            return header;
-        }
-
-        public Stream GetFileStreamAsync(uint fileIndex)
+        public Stream GetFileStream()
         {
             Stream stream = null;
 
