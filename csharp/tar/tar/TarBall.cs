@@ -84,14 +84,7 @@ namespace tar
             {
                 currentPosition = baseStream.Seek(nextHeaderPosition, SeekOrigin.Begin);
 
-                if (currentPosition != nextHeaderPosition)
-                {
-                    result = false;
-                }
-                else
-                {
-                    result = true;
-                }
+                result = (currentPosition == nextHeaderPosition);
             }
             else
             {
@@ -108,47 +101,59 @@ namespace tar
                     {
                         throw new InvalidDataException($"Read unexpected ammount of bytes {numBytesRead}; tarball possibly corrupted.");
                     }
+
+                    currentPosition += numBytesRead.Result;
                 }
             }
+
+            return result;
         }
 
-        public async Task<TarHeader> GetNextHeaderAsync(uint fileIndex)
+        public TarHeader GetNextHeader()
         {
-            return Task.Factory.StartNew(() => {
-                TarHeader header;
+            TarHeader header;
 
-                if (currentPosition != nextHeaderPosition &&
-                    !MoveToNextHeader())
+            if (currentPosition != nextHeaderPosition && !MoveToNextHeader())
+            {
+                header = null;
+            }
+            else
+            {
+                byte[] encodedHeader = new byte[LOGICAL_RECORD_SIZE];
+
+                int numBytesRead = baseStream.Read(encodedHeader, 0, LOGICAL_RECORD_SIZE);
+
+                if (numBytesRead != LOGICAL_RECORD_SIZE)
                 {
-                    header = null;
-                }
-                else
-                {
-                    byte[] encodedHeader = new byte[LOGICAL_RECORD_SIZE];
-
-                    int numBytesRead = baseStream.Read(encodedHeader, 0, LOGICAL_RECORD_SIZE);
-
-                    if (numBytesRead != LOGICAL_RECORD_SIZE)
-                    {
-                        throw new InvalidDataException($"Read unexpected ammount of bytes {numBytesRead}; tarball possibly corrupted.");
-                    }
-
-                    header = TarHeader.Parse(encodedHeader);
-
-                    currentPosition += numBytesRead;
-
-                    nextHeaderPosition += (LOGICAL_RECORD_SIZE + header.size);
+                    throw new InvalidDataException($"Read unexpected ammount of bytes {numBytesRead}; tarball possibly corrupted.");
                 }
 
-                return header;
-            });
+                header = TarHeader.Parse(encodedHeader);
+
+                currentHeader = header;
+
+                currentPosition += numBytesRead;
+
+                nextHeaderPosition += (LOGICAL_RECORD_SIZE + header.size);
+            }
+
+            return header;
         }
 
         public Stream GetFileStream()
         {
-            Stream stream = null;
+            Stream result;
 
-            return stream;
+            if (currentHeader == null)
+            {
+                result = null;
+            }
+            else
+            {
+                result = new TarFileReadOnlyStream(baseStream, ref currentPosition, nextHeaderPosition - 1, currentHeader.size);
+            }
+
+            return result;
         }
     }
 }
