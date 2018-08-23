@@ -1,0 +1,53 @@
+﻿<!-- Reference: http://www.wpfwiki.com/(X(1)S(n4r55f55pokc5nbnfnm5fl45))/Default.aspx?Page=WPF%20Q5.3&AspxAutoDetectCookieSupport=1 -->
+<Window x:Class="WpfTest01.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Data="clr-namespace:WpfTest01.Data"
+        Title="MainWindow" Height="501" Width="625"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}" >
+    <!-- Note: needed to include DataContext above manually. Without that, any bindings below fail. -->
+    <Grid>
+        <Grid.Resources>
+            <Data:CustomData x:Key="customData" />
+            <XmlDataProvider x:Key="XmlDataSet1" XPath="/colors">
+                <x:XData>
+                    <colors>
+                        <color name="pink"/>
+                        <color name="white"/>
+                        <color name="black"/>
+                        <color name="cyan"/>
+                        <color name="gray"/>
+                        <color name="magenta"/>
+                    </colors>
+                </x:XData>
+            </XmlDataProvider>
+        </Grid.Resources>
+        <Button Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="button1" VerticalAlignment="Top" Width="75" ToolTip="This button just shows an image.">
+            <Image Source="Data\Bears.jpg" />
+        </Button>
+        <ListView Height="100" HorizontalAlignment="Left" Margin="12,41,0,0" Name="listView2" VerticalAlignment="Top" Width="128" ItemsSource="{Binding Data2}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Key}" Header="Key" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value" />
+                </GridView>
+            </ListView.View>
+            <ListView.ToolTip >Example of how to bind a Dictionary&lt;int,string&gt; to a ListView.</ListView.ToolTip>
+        </ListView>
+        <ListView Height="100" HorizontalAlignment="Left" Margin="12,147,0,0" Name="listView1" VerticalAlignment="Top" Width="128" ItemsSource="{Binding Data1}" >
+            <ListView.ToolTip >Example of how to bind a List&lt;string&gt; to a ListView.</ListView.ToolTip>
+        </ListView>
+        <ListBox Height="100" HorizontalAlignment="Left" Margin="146,41,0,0" Name="listView3" VerticalAlignment="Top" Width="128" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Source={StaticResource XmlDataSet1}, XPath=color/@name}" >
+            <ListBox.ToolTip >This ListView has its data coming from a static resource (xml content) defined in the local XAML.</ListBox.ToolTip>
+        </ListBox>
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,253,0,0" Name="textBox1" VerticalAlignment="Top" Width="262" Text="{Binding Source={x:Static Data:CustomData.GeneralContent}, Path=.}">
+            <TextBox.ToolTip>This textbox has its Text property bound to a static variable in a non-static class.</TextBox.ToolTip>
+        </TextBox>
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,282,0,0" Name="textBox2" VerticalAlignment="Top" Width="262" Text="{Binding Source={x:Static Data:StaticData.GeneralContent}, Path=.}">
+            <TextBox.ToolTip>This textbox has its Text property bound to a static variable in a static class.</TextBox.ToolTip>
+        </TextBox>
+        <TextBox Height="23" Margin="12,311,329,0" Name="textBox3" VerticalAlignment="Top" Text="{Binding ElementName=textBox2, Path=Text}" >
+            <TextBox.ToolTip>This text box has its Text copied from the textbox above, through an ElementName binding.</TextBox.ToolTip>
+        </TextBox>
+    </Grid>
+</Window>
