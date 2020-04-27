@@ -1,0 +1,1 @@
+gcc main.c -o sample  `mysql_config --cflags --libs`
