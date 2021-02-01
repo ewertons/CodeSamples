@@ -1,0 +1,73 @@
+﻿# How-to-Manage-Azure-KeyVault-with-DotNet
+
+01. Register new App
+	- Azure Portal -> App Registrations -> New
+	- Name "KeyVaultTestApp"
+	- Select "Accounts in this organizational directory only (Default directory only - Single Tenant)"
+	- Click on Register
+	- On the new App registration dashboard, copy and save `tenant ID` and `client ID`
+	
+	- Go to the "Certificates & secrets" section
+	- Add a New client secret
+	- Name "KeyVaultTestAppSecret", Expires in 1 year;
+	- Click on Add
+	- Copy and save the `Value` of the new secret (it will become hidden afterwards).
+02. Create a new Key Vault
+	- Copy and save the keyvault URL (on the keyvault dashboard)
+03. Add keyvault access policy
+	- On KeyVault dashboard, go to `Access policies`
+	- Click on `Add Access Policy`
+	- Configure from template "Secret Management"
+	- Select principal "KeyVaultTestApp"
+	- Click on Add
+	- Click on Save (!!!)
+04. Create .Net solution
+
+	```c
+	mkdir KeyVaultTestApp
+	cd KeyVaultTestApp
+	dotnet new sln
+
+	mkdir ConsoleApp
+	cd ConsoleApp
+	dotnet new console
+	dotnet add ConsoleApp.csproj package Azure.Identity
+	dotnet add ConsoleApp.csproj package Azure.Security.KeyVault.Secrets
+	cd ..
+
+	dotnet sln add ConsoleApp\ConsoleApp.csproj
+	```
+05. The code
+	- Open the solution `KeyVaultTestApp.sln`
+	- Add the code:
+	
+	```csharp
+	using Azure.Identity;
+	using Azure.Security.KeyVault.Secrets;
+	using System;
+
+	namespace ConsoleApp
+	{
+		class Program
+		{
+			static void Main(string[] args)
+			{
+				string keyVaultUrl = "https://esdskeyvault.vault.azure.net/";
+
+				var secret = new ClientSecretCredential(
+					"<app registration tenant id>",
+					"<app registration client id>",
+					"<secret value>");
+
+				var client = new SecretClient(vaultUri: new Uri(keyVaultUrl), credential: secret);
+
+				foreach (SecretProperties secretProperties in client.GetPropertiesOfSecrets())
+				{
+					Console.WriteLine(secretProperties.Name);
+				}
+			}
+		}
+	}
+	```
+06. Run.
+
