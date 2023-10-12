@@ -1,3 +1,5 @@
+// From: https://aticleworld.com/ssl-server-client-using-openssl-in-c/
+
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
@@ -38,7 +40,11 @@ SSL_CTX* InitCTX(void)
     SSL_CTX *ctx;
     OpenSSL_add_all_algorithms();  /* Load cryptos, et.al. */
     SSL_load_error_strings();   /* Bring in and register error messages */
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     method = TLSv1_2_client_method();  /* Create new client-method instance */
+#else
+    method = TLS_client_method();
+#endif
     ctx = SSL_CTX_new(method);   /* Create new context */
     if ( ctx == NULL )
     {

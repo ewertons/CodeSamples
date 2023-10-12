@@ -49,7 +49,11 @@ SSL_CTX* InitServerCTX(void)
     SSL_CTX *ctx;
     OpenSSL_add_all_algorithms();  /* load & register all cryptos, etc. */
     SSL_load_error_strings();   /* load all error messages */
+#if (OPENSSL_VERSION_NUMBER < 0x10100000L)
     method = TLSv1_2_server_method();  /* create new server-method instance */
+#else
+    method = TLS_server_method();
+#endif
     ctx = SSL_CTX_new(method);   /* create new context from method */
     if ( ctx == NULL )
     {
