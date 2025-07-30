@@ -1,0 +1,8 @@
+[package]
+name = "OAuth"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = "4.11"
+serde = { version = "1.0", features = ["derive"] }

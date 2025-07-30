@@ -1,0 +1,45 @@
+ewertons@ece031de8617:~$ curl -k -v -X GET "http://localhost:8080/authorize?client_id=bla123&response_type=code&redirect_uri=myurl&state=mystate123&username=alice&password=password123"
+Note: Unnecessary use of -X or --request, GET is already inferred.
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8080...
+* connect to ::1 port 8080 from ::1 port 41336 failed: Connection refused
+*   Trying 127.0.0.1:8080...
+* Connected to localhost (127.0.0.1) port 8080
+> GET /authorize?client_id=bla123&response_type=code&redirect_uri=myurl&state=mystate123&username=alice&password=password123 HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+< HTTP/1.1 302 Found
+< content-length: 0
+< location: myurl?code=authcode123&state=mystate123
+< date: Wed, 30 Jul 2025 05:29:44 GMT
+<
+* Connection #0 to host localhost left intact
+
+ewertons@ece031de8617:~$ curl -k -v -X POST -H "Authorization: Bearer authcode123" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=read/write&code=authcode123&client_id=bla123&client_secret=somesecret&redirect_uri=myurl2" "http://localhost:8080/token"
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8080...
+* connect to ::1 port 8080 from ::1 port 50466 failed: Connection refused
+*   Trying 127.0.0.1:8080...
+* Connected to localhost (127.0.0.1) port 8080
+> POST /token HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Authorization: Bearer authcode123
+> Content-Type: application/x-www-form-urlencoded
+> Content-Length: 100
+>
+< HTTP/1.1 200 OK
+< content-length: 75
+< content-type: application/json
+< date: Wed, 30 Jul 2025 05:42:21 GMT
+<
+* Connection #0 to host localhost left intact
+{"access_token":"access_token_abc","token_type":"Bearer","expires_in":3600}ewertons@ece031de8617:~$
