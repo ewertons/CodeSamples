@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/sqlite_sample.dir/main.c.o -o sqlite_sample  /usr/lib/x86_64-linux-gnu/libsqlite3.so 
